@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 import javax.swing.JOptionPane;
+import java.sql.*;
+
 /**
  *
  * @author Skyrunner
@@ -31,8 +33,11 @@ public class Login extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Parking System Management");
 
         jPasswordField1.setFont(new java.awt.Font("Comic Sans MS", 1, 18)); // NOI18N
 
@@ -68,6 +73,8 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setText("Enter User ID");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -85,9 +92,13 @@ public class Login extends javax.swing.JFrame {
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(70, 70, 70)
-                        .addComponent(jLabel2)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(27, 27, 27)
-                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
+                            .addComponent(jTextField1))))
                 .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -95,7 +106,11 @@ public class Login extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(120, 120, 120)
+                .addGap(78, 78, 78)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel3)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -123,14 +138,33 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String b;
+        try{
+        String a,b;
+        a=jTextField1.getText();
         b= new String(jPasswordField1.getPassword());
-        if ("Rishi".equals(b))
-        {this.dispose();
-            Welcome n = new Welcome();
-            n.setVisible(true);}
+        Class.forName("java.sql.Driver");
+        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/ParkingSystem","root","root");
+        Statement st= con.createStatement();
+        ResultSet rs= st.executeQuery("select * from login where ID = '"+a+"';");
+        if (rs.next())
+        {
+            if(rs.getString("ID").equals(a) && rs.getString("Pass").equals(b))
+            {
+                this.dispose();
+                Welcome n = new Welcome();
+                n.setVisible(true);
+            }
+        }
         else
-        JOptionPane.showMessageDialog(null,"Invalid Password");
+            {
+                JOptionPane.showMessageDialog(null,"The Username or Password is Incorrect");
+            }
+        }
+        catch(Exception e)
+        {
+        JOptionPane.showMessageDialog(null,e.getMessage());
+        
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -173,6 +207,8 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
