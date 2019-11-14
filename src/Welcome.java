@@ -137,8 +137,8 @@ public class Welcome extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        Admin_Settings as = new Admin_Settings();
-        as.setVisible(true);
+        Admin_Login al = new Admin_Login();
+        al.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton4ActionPerformed
 
