@@ -1,3 +1,11 @@
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -15,6 +23,31 @@ public class Admin_Settings extends javax.swing.JFrame {
      */
     public Admin_Settings() {
         initComponents();
+        try{
+            Class.forName("java.sql.Driver");
+            
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ParkingSystem","root","root");
+            Statement st = con.createStatement();
+            Statement st2 = con.createStatement();
+            
+            ResultSet myRs = st.executeQuery("select * from parkingMetadata where MetadataField = \"basePayment\" or MetadataField=\"availableSpace\";");
+            String CBP,TPSA;
+            while (myRs.next())
+            {
+             if(myRs.getString("MetadataField").equals("basePayment")){
+                 CBP=myRs.getString("MetadataValue");
+                jTextField1.setText(CBP + "");
+             }
+             if(myRs.getString("MetadataField").equals("availableSpace")){
+                 TPSA = myRs.getString("MetadataValue");
+                jTextField3.setText(TPSA + "");
+             }
+            }
+        }
+        catch(Exception e){
+            System.out.println(e);
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -36,16 +69,26 @@ public class Admin_Settings extends javax.swing.JFrame {
         jTextField4 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Parking Management System");
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
         jLabel1.setText("Current Base Payment  :");
 
         jTextField1.setEditable(false);
         jTextField1.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
-        jTextField1.setText("60 Rs");
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText(" Change Base Payment :");
 
@@ -54,11 +97,15 @@ public class Admin_Settings extends javax.swing.JFrame {
 
         jTextField3.setEditable(false);
         jTextField3.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
-        jTextField3.setText("200");
 
         jLabel4.setText("Change Total Parking Spots :");
 
         jButton1.setText("Change");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Back");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -67,6 +114,8 @@ public class Admin_Settings extends javax.swing.JFrame {
             }
         });
 
+        jLabel5.setText("Or");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -74,6 +123,7 @@ public class Admin_Settings extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -108,7 +158,9 @@ public class Admin_Settings extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -133,6 +185,62 @@ public class Admin_Settings extends javax.swing.JFrame {
         this.dispose();
                 
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        try{
+            Class.forName("java.sql.Driver");
+            
+            Integer basePayment =Integer.parseInt((jTextField2.getText()));
+            Integer availableSpace = Integer.parseInt((jTextField4.getText()));
+            
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ParkingSystem","root","root");
+            Statement st = con.createStatement();
+            
+            ResultSet myRs = st.executeQuery("select MetadataField, MetadataValue from parkingMetadata where MetadataField = \"basePayment\" or MetadataField = \"availableSpace\"");
+            boolean isBasePayment = false;
+            boolean isAvailableSpace = false;
+            while (myRs.next())
+            {
+             if(myRs.getString("MetadataField").equals("basePayment")){
+                 isBasePayment = true;
+             }
+             if(myRs.getString("MetadataField").equals("availableSpace")){
+                 isAvailableSpace = true;
+             }
+            }
+            Boolean res;
+            if(!isBasePayment){
+                res = st.execute("insert into parkingMetadata values(\"basePayment\","+basePayment+");");
+            }
+            else{
+                // Update Statements goes here for MetaData entry for ParkingMetadata
+                res = st.execute("Update parkingMetadata set MetadataValue="+basePayment+" where MetadataField=\"basePayment\";");
+                JOptionPane.showMessageDialog(null, "Updated Values Successfull");
+            }
+            
+            if(!isAvailableSpace){
+                res = st.execute("insert into parkingMetadata values(\"availableSpace\","+availableSpace+");");
+            }
+            else{
+                // Update Statements goes here for MetaData entry for ParkingMetadata
+                res = st.execute("Update parkingMetadata set MetadataValue="+availableSpace+" where MetadataField=\"availableSpace\";");
+                JOptionPane.showMessageDialog(null, "Updated Values Successfull");
+            } 
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_formComponentShown
 
     /**
      * @param args the command line arguments
@@ -176,6 +284,7 @@ public class Admin_Settings extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
