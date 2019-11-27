@@ -61,7 +61,13 @@ public class Parking extends javax.swing.JFrame {
            RS=st.executeQuery("select Sp_assig from customer order by Sp_assig asc;");
            while (RS.next())
            {jTextField9.setText(RS.getInt("Sp_assig")+"");}
-       
+           
+           ResultSet rs1;
+           rs1=st.executeQuery("Select Available from spot order by Available desc");
+           while (rs1.next())
+           {
+           jTextField3.setText(rs1.getInt("Available")+"");
+           }
         }
         catch(Exception e){
             System.out.println(e);
@@ -525,6 +531,10 @@ public class Parking extends javax.swing.JFrame {
         rs=st.execute("insert into payment values ('"+date+"','"+custid+"','"+arrtime+"','"+depttime+"','"+tot_amt+"');");
         //System.out.println("Payment Data Saved");
         }
+        int avail=Integer.parseInt(jTextField2.getText());
+        avail=avail-spot_assign;
+        Boolean rs;
+        rs=st.execute("insert into spot values ('"+date+"','"+spot_assign+"','"+avail+"');");
         st.executeUpdate("insert into customer (Cust_ID,C_date,Lise_No,Sp_assig) values ('"+custid+"','"+date+"', '"+lisno+"','"+spot_assign+"');");
         JOptionPane.showMessageDialog(null,"Data Saved. Proceed to Parking");
         }catch (Exception e)
@@ -545,13 +555,14 @@ public class Parking extends javax.swing.JFrame {
         Class.forName("java.sql.Driver");
         Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/parkingsystem","root","root");
         Statement st=con.createStatement();
-        ResultSet rs=st.executeQuery("select spot.S_date,spot.Sp_ID,spot.Available from spot inner join customer on customer.Cust_ID=spot.Sp_ID where Lise_No= '"+lp+"';");
+        ResultSet rs=st.executeQuery("select spot.S_date,spot.Sp_ID,customer.Cust_ID from spot inner join customer on customer.Cust_ID=spot.Sp_ID where Lise_No= '"+lp+"';");
+        
         while (rs.next())
         {
-        jTextField3.setText(rs.getInt("Available")+"");
         jTextField1.setText(rs.getInt("Sp_ID")+"");
         jTextField4.setText(rs.getInt("Cust_ID")+"");
         }
+        
         }
         catch(Exception ex)
         {
