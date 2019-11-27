@@ -23,6 +23,7 @@ public class Parking extends javax.swing.JFrame {
     public Parking() {
         initComponents();
         jTextField7.setVisible(false);
+        jTextField9.setVisible(false);
          try{
             Class.forName("java.sql.Driver");
             
@@ -43,16 +44,23 @@ public class Parking extends javax.swing.JFrame {
                 jTextField2.setText(TPSA + "");
              }
             }
+            
             jTextField5.setText(java.time.LocalDate.now()+"");
 //            SimpleDateFormat sdf2=new SimpleDateFormat(" HH:mm:ss");
 //            Date d2=new Date();
            LocalDateTime ldt=LocalDateTime.now();
-           DateTimeFormatter dtf= DateTimeFormatter.ofPattern("h:mm a");
+           DateTimeFormatter dtf= DateTimeFormatter.ofPattern("H:mm");
            jTextField6.setText(dtf.format(ldt)+"");
+           
            ResultSet rs;
            rs=st.executeQuery("select Cust_ID from customer order by Cust_ID asc;");
            while (rs.next())
            {jTextField7.setText(rs.getInt("Cust_ID")+"");}
+           
+           ResultSet RS;
+           RS=st.executeQuery("select Sp_assig from customer order by Sp_assig asc;");
+           while (RS.next())
+           {jTextField9.setText(RS.getInt("Sp_assig")+"");}
        
         }
         catch(Exception e){
@@ -108,6 +116,7 @@ public class Parking extends javax.swing.JFrame {
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
         jTextField7 = new javax.swing.JTextField();
+        jTextField9 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Parking Management System");
@@ -390,8 +399,11 @@ public class Parking extends javax.swing.JFrame {
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(72, 72, 72))))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(2, 2, 2))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -406,7 +418,9 @@ public class Parking extends javax.swing.JFrame {
                         .addGap(27, 27, 27)
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton5)
@@ -433,7 +447,7 @@ public class Parking extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     LocalDateTime ldt=LocalDateTime.now();
-           DateTimeFormatter dtf= DateTimeFormatter.ofPattern("h:mm a");
+           DateTimeFormatter dtf= DateTimeFormatter.ofPattern("H:mm");
           Arr_T.setText(dtf.format(ldt)+"");
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -470,7 +484,7 @@ public class Parking extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         LocalDateTime ldt=LocalDateTime.now();
-           DateTimeFormatter dtf= DateTimeFormatter.ofPattern("h:mm a");
+           DateTimeFormatter dtf= DateTimeFormatter.ofPattern("H:mm");
            Dep_T.setText(dtf.format(ldt)+"");
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -479,7 +493,7 @@ public class Parking extends javax.swing.JFrame {
         try 
         {
         int custid=Integer.parseInt(jTextField7.getText());
-        int spot_assign=0;
+        int spot_assign=Integer.parseInt(jTextField9.getText());
         int base_payment;
         int tot_amt;
         String arrtime,depttime;
@@ -497,7 +511,7 @@ public class Parking extends javax.swing.JFrame {
 //        custid++;
 //        spot_assign=spot_assign+1;
 //        }
-        if (custid==custid)
+        if (custid==custid && spot_assign==spot_assign)
         {
         custid++;
         spot_assign++;
@@ -622,5 +636,6 @@ public class Parking extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
+    private javax.swing.JTextField jTextField9;
     // End of variables declaration//GEN-END:variables
 }
