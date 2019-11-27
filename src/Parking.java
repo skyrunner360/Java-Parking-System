@@ -22,6 +22,7 @@ public class Parking extends javax.swing.JFrame {
      */
     public Parking() {
         initComponents();
+        jTextField7.setVisible(false);
          try{
             Class.forName("java.sql.Driver");
             
@@ -35,7 +36,7 @@ public class Parking extends javax.swing.JFrame {
             {
              if(myRs.getString("MetadataField").equals("basePayment")){
                  CBP=myRs.getString("MetadataValue");
-                jTextField8.setText(CBP + " Rs");
+                jTextField8.setText(CBP + "");
              }
              if(myRs.getString("MetadataField").equals("availableSpace")){
                  TPSA = myRs.getString("MetadataValue");
@@ -48,11 +49,17 @@ public class Parking extends javax.swing.JFrame {
            LocalDateTime ldt=LocalDateTime.now();
            DateTimeFormatter dtf= DateTimeFormatter.ofPattern("h:mm a");
            jTextField6.setText(dtf.format(ldt)+"");
+           ResultSet rs;
+           rs=st.executeQuery("select Cust_ID from customer order by Cust_ID asc;");
+           while (rs.next())
+           {jTextField7.setText(rs.getInt("Cust_ID")+"");}
+       
         }
         catch(Exception e){
             System.out.println(e);
             e.printStackTrace();
         }
+         
     }
 
     /**
@@ -100,6 +107,7 @@ public class Parking extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
+        jTextField7 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Parking Management System");
@@ -381,7 +389,8 @@ public class Parking extends javax.swing.JFrame {
                                 .addGap(128, 128, 128)))
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(72, 72, 72))))
         );
         jPanel4Layout.setVerticalGroup(
@@ -391,13 +400,13 @@ public class Parking extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(0, 0, 0)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(27, 27, 27)
-                        .addComponent(jButton2)))
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton5)
@@ -469,22 +478,45 @@ public class Parking extends javax.swing.JFrame {
         // TODO add your handling code here:
         try 
         {
-        int custid=0;
+        int custid=Integer.parseInt(jTextField7.getText());
+        int spot_assign=0;
+        int base_payment;
+        int tot_amt;
+        String arrtime,depttime;
+        arrtime=Arr_T.getText();
+        depttime=Dep_T.getText();
+        
         String date=jTextField5.getText();
         String lisno=LP_No.getText();
         Class.forName("java.sql.Driver");
         Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/parkingsystem","root","root");
         Statement st=con.createStatement();
-        for (int i=0;i<=1000;i++)
+        
+//        for (int i=0;i<=1000;i++)
+//        {
+//        custid++;
+//        spot_assign=spot_assign+1;
+//        }
+        if (custid==custid)
         {
-        custid=custid+1;
-        st.executeUpdate("insert into customer (Cust_ID,C_date,Lise_No) values ('"+custid+"','"+date+"', '"+lisno+"');");
-        JOptionPane.showMessageDialog(null,"Data Saved. Proceed to Parking");break;}
+        custid++;
+        spot_assign++;
+        }
+        if(jCheckBox1.isSelected())
+        {
+        base_payment=Integer.parseInt(jTextField8.getText());
+        //Calculate Total Amount Later
+        tot_amt=base_payment+50;
+        Boolean rs;
+        rs=st.execute("insert into payment values ('"+date+"','"+custid+"','"+arrtime+"','"+depttime+"','"+tot_amt+"');");
+        //System.out.println("Payment Data Saved");
+        }
+        st.executeUpdate("insert into customer (Cust_ID,C_date,Lise_No,Sp_assig) values ('"+custid+"','"+date+"', '"+lisno+"','"+spot_assign+"');");
+        JOptionPane.showMessageDialog(null,"Data Saved. Proceed to Parking");
         }catch (Exception e)
         {
         JOptionPane.showMessageDialog(null,e.getMessage());
-        }
-        
+        }  
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -588,6 +620,7 @@ public class Parking extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     // End of variables declaration//GEN-END:variables
 }
