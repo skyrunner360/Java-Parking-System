@@ -106,6 +106,7 @@ public class Parking extends javax.swing.JFrame {
         Dep_T = new javax.swing.JTextField();
         Tot_AP = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
+        jButton9 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -248,6 +249,13 @@ public class Parking extends javax.swing.JFrame {
 
         jLabel7.setText("Departure Time :");
 
+        jButton9.setText("Departure");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -262,7 +270,11 @@ public class Parking extends javax.swing.JFrame {
                     .addComponent(Dep_T)
                     .addComponent(Tot_AP, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jButton9)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -276,7 +288,8 @@ public class Parking extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(Tot_AP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Tot_AP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton9))
                 .addContainerGap())
         );
 
@@ -526,10 +539,15 @@ public class Parking extends javax.swing.JFrame {
         {
         base_payment=Integer.parseInt(jTextField8.getText());
         //Calculate Total Amount Later
-        tot_amt=base_payment+50;
+        tot_amt=base_payment+0;
         Boolean rs;
-        rs=st.execute("insert into payment values ('"+date+"','"+custid+"','"+arrtime+"','"+depttime+"','"+tot_amt+"');");
+        rs=st.execute("insert into payment values ('"+date+"','"+custid+"','"+arrtime+"','"+depttime+"','"+tot_amt+"','1');");
         //System.out.println("Payment Data Saved");
+        }
+        else{
+        Boolean rs;
+        tot_amt=0;
+        rs=st.execute("insert into payment values ('"+date+"','"+custid+"','"+arrtime+"','"+depttime+"','"+tot_amt+"','0');");
         }
         int avail=Integer.parseInt(jTextField2.getText());
         avail=avail-spot_assign;
@@ -545,13 +563,17 @@ public class Parking extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(null, "Printing Bill now. Please Wait!");
+         JOptionPane.showMessageDialog(null, "Printing Bill now. Please Wait!");         
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
         try{
+        String arrtime,depttime;
+        arrtime=Arr_T.getText();
+        depttime=Dep_T.getText();
         String lp=LP_No.getText();
+        
         Class.forName("java.sql.Driver");
         Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/parkingsystem","root","root");
         Statement st=con.createStatement();
@@ -562,7 +584,33 @@ public class Parking extends javax.swing.JFrame {
         jTextField1.setText(rs.getInt("Sp_ID")+"");
         jTextField4.setText(rs.getInt("Cust_ID")+"");
         }
+        int custid=Integer.parseInt(jTextField4.getText());
+        ResultSet rs1;
+        rs1=st.executeQuery("select Arr_time,Dept_Time,basepaid from payment where P_ID='"+custid+"'");
+        if (rs1.next())
+        {
+        Arr_T.setText(rs1.getTime("Arr_time")+"");
+        Dep_T.setText(rs1.getTime("Dept_Time")+"");
+            if(rs1.getInt("basepaid")==1)
+            {
+                jCheckBox1.setSelected(true);
+            }
+            else{jCheckBox1.setSelected(false);}
+//        Tot_AP.setText(rs1.getInt("Tot_Amt")+"");
+        }
         
+//        ResultSet RS;
+//        RS=st.executeQuery("select if(timediff('"+depttime+"','"+arrtime+"')>=1, '1' , '0') as Difference from payment where P_ID = '"+custid+"'");
+//        while (RS.next())
+//        {
+//            System.out.println(RS.getString("Difference"));
+////            String td;
+////            td=new String(RS.getTime("Difference"));
+////        if ()
+////        {
+////        
+////        }
+//        }
         }
         catch(Exception ex)
         {
@@ -573,6 +621,59 @@ public class Parking extends javax.swing.JFrame {
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+          try {
+            int custid=Integer.parseInt(jTextField4.getText());
+            String arrtime,depttime;
+            arrtime=Arr_T.getText();
+            depttime=Dep_T.getText();
+            int tamt=0;
+            int base_payment=Integer.parseInt(jTextField8.getText());
+            Class.forName("java.sql.Driver");
+            Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/parkingsystem","root","root");
+            Statement st=con.createStatement();
+            ResultSet RS;
+            RS=st.executeQuery("select if(timediff('"+depttime+"','"+arrtime+"')>=1, '1' , '0') as Difference from payment where P_ID = '"+custid+"'");
+            while (RS.next())
+            {
+//                System.out.println(RS.getString("Difference"));
+            String td;
+            td=new String(RS.getString("Difference"));
+            if (td.equals("1"))
+                 {
+                     if(jCheckBox1.isSelected())
+                     {tamt=30;
+//                     System.out.println(tamt);
+                     Tot_AP.setText(tamt+"");}
+                     else
+                     {
+                     tamt=base_payment+30;
+                     Tot_AP.setText(tamt+"");
+                     }
+                 }
+            else
+             {
+                 if(jCheckBox1.isSelected())
+                 {
+                 tamt=30;
+                 Tot_AP.setText(tamt+"");
+                 }
+//             tamt=Integer.parseInt(Tot_AP.getText());
+                 else{
+                 tamt=base_payment+30;
+                 Tot_AP.setText(tamt+"");
+                 }
+             
+             }
+          }
+        }
+        catch(Exception ex)
+        {
+        JOptionPane.showMessageDialog(null,ex.getMessage());
+        } 
+    }//GEN-LAST:event_jButton9ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -623,6 +724,7 @@ public class Parking extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
