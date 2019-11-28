@@ -563,7 +563,26 @@ public class Parking extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-         JOptionPane.showMessageDialog(null, "Printing Bill now. Please Wait!");         
+        try{
+            String DT,Tamt,PID;
+            int ba;
+            DT=Dep_T.getText();
+            Tamt=Tot_AP.getText();
+            PID= jTextField4.getText();
+            
+            Class.forName("java.sql.Driver");
+            Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/parkingsystem","root","root");
+            Statement st=con.createStatement();
+            Boolean rs;
+            if (jCheckBox1.isSelected())
+            {ba=1;}
+            else{ba=0;}
+            rs=st.execute("update payment set Dept_Time = '"+DT+"',Tot_Amt = '"+Tamt+"',basepaid = '"+ba+"' where P_ID= '"+PID+"'");
+        
+         JOptionPane.showMessageDialog(null, "Printing Bill now. Please Wait!");
+        
+        }
+        catch(Exception e){JOptionPane.showMessageDialog(null, e.getMessage());}
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
