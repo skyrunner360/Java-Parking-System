@@ -98,6 +98,8 @@ public class Record extends javax.swing.JFrame {
 
         jLabel2.setText("OR");
 
+        jTextField1.setText("0");
+
         jLabel4.setText("NOTE: (Hover Here)");
         jLabel4.setToolTipText("To Search For Customer ID you need to also mention the date");
 
@@ -245,12 +247,28 @@ public class Record extends javax.swing.JFrame {
         String date = (jTextField2.getText());
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/ParkingSystem","root","root");
         Statement st = con.createStatement();
-        ResultSet myRs = st.executeQuery("select customer.C_date,customer.Cust_ID,Lise_No,Sp_assig,Arr_Time,Dept_Time,Tot_Amt from customer inner join payment on customer.C_date=payment.P_date where Cust_ID= '"+cust_ID+"' or C_date = '"+date+"';");
+        int check = 0;
+        check =Integer.parseInt(jTextField1.getText());
+        if (check!=0)
+        {
+        ResultSet myRs = st.executeQuery("select customer.C_date,customer.Cust_ID,Lise_No,Sp_assig,Arr_Time,Dept_Time,Tot_Amt from customer inner join payment on customer.Cust_ID=payment.P_ID where Cust_ID='"+cust_ID+"';");
         while (myRs.next())
         {
          Object o[]={myRs.getDate("C_date"),myRs.getInt("Cust_ID"),myRs.getString("Lise_No"),myRs.getInt("Sp_assig"),myRs.getTime("Arr_Time"),myRs.getTime("Dept_Time"),myRs.getInt("Tot_Amt")};
          DefaultTableModel tm=(DefaultTableModel) jTable1.getModel();
          tm.addRow(o);
+
+        }
+        }
+        else if(check==0)
+        {
+            ResultSet myRs = st.executeQuery("select customer.C_date,customer.Cust_ID,Lise_No,Sp_assig,Arr_Time,Dept_Time,Tot_Amt from customer inner join payment on customer.Cust_ID=payment.P_ID where C_date='"+date+"';");
+            while (myRs.next())
+                {
+                    Object o[]={myRs.getDate("C_date"),myRs.getInt("Cust_ID"),myRs.getString("Lise_No"),myRs.getInt("Sp_assig"),myRs.getTime("Arr_Time"),myRs.getTime("Dept_Time"),myRs.getInt("Tot_Amt")};
+                    DefaultTableModel tm=(DefaultTableModel) jTable1.getModel();
+                    tm.addRow(o);
+                }
         }
         }
         catch (Exception ex)
