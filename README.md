@@ -1,0 +1,11 @@
+# Java-Parking-System
+Java DBMS Project of Parking System Management
+
+![GitHub followers](https://img.shields.io/github/followers/skyrunner360?label=Follow&style=social) ![Twitter Follow](https://img.shields.io/twitter/follow/skyrunner360?style=social)
+---
+## Introduction
+This is a Parking management system created in java.
+It can Charge and assign parking space to the vehicles entering the parkig lot and also keep their timely Record.
+
+
+![GitHub last commit](https://img.shields.io/github/last-commit/skyrunner360/screen-rec)
