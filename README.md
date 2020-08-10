@@ -8,4 +8,4 @@ This is a Parking management system created in java.
 It can Charge and assign parking space to the vehicles entering the parkig lot and also keep their timely Record.
 
 
-![GitHub last commit](https://img.shields.io/github/last-commit/skyrunner360/screen-rec)
+![GitHub last commit](https://img.shields.io/github/last-commit/skyrunner360/Java-Parking-System)
