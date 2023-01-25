@@ -1,0 +1,3 @@
+dsn: mysql://root:thisisroot@localhost:3306/parkingsystem
+
+docPath: doc/schema
