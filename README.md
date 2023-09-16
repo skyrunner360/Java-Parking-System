@@ -16,3 +16,5 @@ It can Charge and assign parking space to the vehicles entering the parkig lot a
 ![GitHub last commit](https://img.shields.io/github/last-commit/skyrunner360/Java-Parking-System)
 
 It is designed for the parking manager to be controlled by but administrator of the parking system can also control this in order to seek any flaw by the manager.
+
+Contributors- [Rehan Shivani](https://github.com/Teriyakiboy98)
