@@ -1,11 +1,11 @@
 # Java-Parking-System
 Java DBMS Project of Parking System Management
 
+Contributors- [Rehan Shivani](https://github.com/Teriyakiboy98)
+
 ![GitHub followers](https://img.shields.io/github/followers/skyrunner360?label=Follow&style=social) ![Twitter Follow](https://img.shields.io/twitter/follow/skyrunner360?style=social)
 ---
 ## Introduction
-
-Contributors- [Rehan Shivani](https://github.com/Teriyakiboy98)
 
 ![Alt text](./ps1.png "LogIn") 
 
